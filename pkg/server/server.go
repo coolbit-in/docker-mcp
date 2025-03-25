@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 
-	"github.com/mark3labs/docker_mcp/pkg/handlers"
+	"github.com/coolbit-in/docker-mcp/pkg/handlers"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mark3labs/docker_mcp/pkg/server"
+	"github.com/coolbit-in/docker-mcp/pkg/server"
 	mcpserver "github.com/mark3labs/mcp-go/server"
 	"github.com/spf13/cobra"
 )

@@ -1,4 +1,4 @@
-module github.com/mark3labs/docker_mcp
+module github.com/coolbit-in/docker-mcp
 
 go 1.23.0
 

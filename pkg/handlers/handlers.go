@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/coolbit-in/docker-mcp/pkg/docker"
+	"github.com/coolbit-in/docker-mcp/pkg/models"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/go-connections/nat"
-	"github.com/mark3labs/docker_mcp/pkg/docker"
-	"github.com/mark3labs/docker_mcp/pkg/models"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
