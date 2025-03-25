@@ -22,8 +22,8 @@ type Handler struct {
 }
 
 // NewHandler creates and initializes a new handler
-func NewHandler() (*Handler, error) {
-	client, err := docker.NewClient()
+func NewHandler(dockerSocket string) (*Handler, error) {
+	client, err := docker.NewClient(dockerSocket)
 	if err != nil {
 		return nil, err
 	}
@@ -97,15 +97,10 @@ func (h *Handler) formatErrorResponse(err error) (*mcp.CallToolResult, error) {
 
 // HandleListContainers handles container listing requests
 // Supports optional 'all' parameter to show all containers including stopped ones
-func (h *Handler) HandleListContainers(ctx context.Context, args interface{}) (*mcp.CallToolResult, error) {
-	params, ok := args.(map[string]interface{})
-	if !ok {
-		params = make(map[string]interface{})
-	}
-
+func (h *Handler) HandleListContainers(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	// Get optional 'all' parameter
 	all := false
-	if allVal, ok := params["all"].(bool); ok {
+	if allVal, ok := request.Params.Arguments["all"].(bool); ok {
 		all = allVal
 	}
 
@@ -143,11 +138,8 @@ func (h *Handler) HandleListContainers(ctx context.Context, args interface{}) (*
 }
 
 // HandleExecCommand handles command execution requests in containers
-func (h *Handler) HandleExecCommand(ctx context.Context, args interface{}) (*mcp.CallToolResult, error) {
-	params, ok := args.(map[string]interface{})
-	if !ok {
-		return h.formatErrorResponse(fmt.Errorf("invalid parameters"))
-	}
+func (h *Handler) HandleExecCommand(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	params := request.Params.Arguments
 
 	containerID, ok := params["container_id"].(string)
 	if !ok || containerID == "" {

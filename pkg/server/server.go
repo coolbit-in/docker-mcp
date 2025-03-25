@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/mark3labs/docker_mcp/pkg/handlers"
@@ -16,8 +15,8 @@ type DockerMCPServer struct {
 }
 
 // NewDockerMCPServer creates and initializes a new Docker MCP server
-func NewDockerMCPServer() (*DockerMCPServer, error) {
-	handler, err := handlers.NewHandler()
+func NewDockerMCPServer(dockerSocket string) (*DockerMCPServer, error) {
+	handler, err := handlers.NewHandler(dockerSocket)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create handler: %w", err)
 	}
@@ -56,9 +55,7 @@ func (s *DockerMCPServer) registerTools() error {
 				mcp.DefaultBool(false),
 			),
 		),
-		func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			return s.handler.HandleListContainers(ctx, request.Params.Arguments)
-		},
+		s.handler.HandleListContainers,
 	)
 
 	// Execute command in container tool
@@ -74,9 +71,7 @@ func (s *DockerMCPServer) registerTools() error {
 				mcp.Required(),
 			),
 		),
-		func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			return s.handler.HandleExecCommand(ctx, request.Params.Arguments)
-		},
+		s.handler.HandleExecCommand,
 	)
 
 	// Pull image tool

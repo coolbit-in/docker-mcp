@@ -22,27 +22,39 @@ type Client struct {
 }
 
 // NewClient creates and initializes a Docker client connection
-func NewClient() (*Client, error) {
-	// Get Docker socket path, first try standard path
-	dockerSockPath := "/var/run/docker.sock"
+func NewClient(dockerSocket string) (*Client, error) {
+	var cli *client.Client
+	var err error
 
-	// Check Rancher Desktop path (MacOS only)
-	rdSockPath := os.ExpandEnv("${HOME}/.rd/docker.sock")
-	if _, err := os.Stat(rdSockPath); err == nil {
-		dockerSockPath = rdSockPath
+	if dockerSocket != "" {
+		// Use provided Docker socket path
+		cli, err = client.NewClientWithOpts(
+			client.WithHost(dockerSocket),
+			client.WithAPIVersionNegotiation(),
+		)
+	} else {
+		// Get Docker socket path, first try standard path
+		dockerSockPath := "/var/run/docker.sock"
+
+		// Check Rancher Desktop path (MacOS only)
+		rdSockPath := os.ExpandEnv("${HOME}/.rd/docker.sock")
+		if _, err := os.Stat(rdSockPath); err == nil {
+			dockerSockPath = rdSockPath
+		}
+
+		// Check Colima path (MacOS only)
+		colimaSockPath := os.ExpandEnv("${HOME}/.colima/docker.sock")
+		if _, err := os.Stat(colimaSockPath); err == nil {
+			dockerSockPath = colimaSockPath
+		}
+
+		// Create Docker client with auto-detected socket
+		cli, err = client.NewClientWithOpts(
+			client.WithHost("unix://"+dockerSockPath),
+			client.WithAPIVersionNegotiation(),
+		)
 	}
 
-	// Check Colima path (MacOS only)
-	colimaSockPath := os.ExpandEnv("${HOME}/.colima/docker.sock")
-	if _, err := os.Stat(colimaSockPath); err == nil {
-		dockerSockPath = colimaSockPath
-	}
-
-	// Create Docker client
-	cli, err := client.NewClientWithOpts(
-		client.WithHost("unix://"+dockerSockPath),
-		client.WithAPIVersionNegotiation(),
-	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Docker client: %w", err)
 	}
