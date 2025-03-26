@@ -2,25 +2,27 @@ package server
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/coolbit-in/docker-mcp/pkg/handlers"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 
-// DockerMCPServer encapsulates the Docker MCP server
+// DockerMCPServer represents the Docker MCP server
 type DockerMCPServer struct {
 	mcpServer *server.MCPServer
 	handler   *handlers.Handler
 }
 
-// NewDockerMCPServer creates and initializes a new Docker MCP server
-func NewDockerMCPServer(dockerSocket string) (*DockerMCPServer, error) {
-	handler, err := handlers.NewHandler(dockerSocket)
+// NewDockerMCPServer creates a new Docker MCP server instance
+func NewDockerMCPServer(socketPath string) (*DockerMCPServer, error) {
+	handler, err := handlers.NewHandler(socketPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create handler: %w", err)
 	}
 
+	// 创建 MCP 服务器
 	srv := server.NewMCPServer(
 		"docker-mcp",
 		"1.0.0",
@@ -32,20 +34,19 @@ func NewDockerMCPServer(dockerSocket string) (*DockerMCPServer, error) {
 		handler:   handler,
 	}
 
+	// 注册所有工具
 	if err := s.registerTools(); err != nil {
 		return nil, err
 	}
 
+	slog.Info("Docker MCP server created successfully", "socket", socketPath)
 	return s, nil
 }
 
-// GetMCPServer returns the underlying MCP server instance
-func (s *DockerMCPServer) GetMCPServer() *server.MCPServer {
-	return s.mcpServer
-}
-
-// registerTools registers all available tools
+// registerTools registers all available tools with the MCP server
 func (s *DockerMCPServer) registerTools() error {
+	slog.Debug("Registering Docker MCP tools")
+
 	// List containers tool
 	s.mcpServer.AddTool(
 		mcp.NewTool("list_containers",
@@ -313,5 +314,11 @@ func (s *DockerMCPServer) registerTools() error {
 		s.handler.HandleBuildImage,
 	)
 
+	slog.Info("All tools registered successfully")
 	return nil
+}
+
+// GetMCPServer returns the underlying MCP server
+func (s *DockerMCPServer) GetMCPServer() *server.MCPServer {
+	return s.mcpServer
 }
