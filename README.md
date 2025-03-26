@@ -23,44 +23,35 @@ The Model Context Protocol (MCP) is an open protocol developed by Anthropic that
 
 ## Installation
 
-### From Source
+### Using Pre-built Binaries (Recommended)
+
+1. Download the latest release for your platform from [GitHub Releases](https://github.com/coolbit-in/docker-mcp/releases)
+2. Extract the archive:
+   ```bash
+   # For Linux/macOS:
+   tar xzf docker-mcp_*_*.tar.gz
+   
+   # For Windows:
+   # Extract the zip file using Windows Explorer
+   ```
+3. Move the binary to a directory in your PATH:
+   ```bash
+   # Linux/macOS:
+   sudo mv docker-mcp /usr/local/bin/
+   chmod +x /usr/local/bin/docker-mcp
+   
+   # Windows:
+   # Move docker-mcp.exe to a directory in your PATH
+   ```
+
+### Building from Source
+
+If you prefer to build from source or need a specific version:
 
 ```bash
-# Clone the repository
 git clone https://github.com/coolbit-in/docker-mcp.git
 cd docker-mcp
-
-# Build the project
-go build -o docker-mcp cmd/docker-mcp/main.go
-
-# Run the binary
-./docker-mcp
-```
-
-### Using pre-built binaries
-
-Visit our [Releases](https://github.com/coolbit-in/docker-mcp/releases) page to download pre-built binaries for your system.
-
-### Using Docker
-
-```bash
-docker pull coolbit-in/docker-mcp:latest
-docker run -v /var/run/docker.sock:/var/run/docker.sock coolbit-in/docker-mcp
-```
-
-### Building Docker Image
-
-```bash
-# Build without proxy
-docker build -t docker-mcp:latest .
-
-# Build with proxy (useful in regions with network restrictions)
-docker build --build-arg HTTPS_PROXY=http://your-proxy:port \
-             --build-arg HTTP_PROXY=http://your-proxy:port \
-             -t docker-mcp:latest .
-             
-# Using Makefile to build with proxy
-make docker-build HTTPS_PROXY=http://your-proxy:port HTTP_PROXY=http://your-proxy:port
+go build ./cmd/docker-mcp
 ```
 
 ## Usage
