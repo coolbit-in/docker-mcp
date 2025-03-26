@@ -1,6 +1,6 @@
 # Docker MCP (Model Context Protocol)
 
-![Docker MCP](./docs/images/logo.png)
+![Docker MCP](./docs/images/logo.jpeg)
 
 [![Go Version](https://img.shields.io/github/go-mod/go-version/coolbit-in/docker-mcp)](https://golang.org/)
 [![License](https://img.shields.io/github/license/coolbit-in/docker-mcp)](LICENSE)
