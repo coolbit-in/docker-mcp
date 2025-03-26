@@ -44,7 +44,7 @@ func initRootCmd() *cobra.Command {
 	}
 
 	// Add global flags
-	rootCmd.PersistentFlags().StringVar(&dockerSocket, "docker-socket", "unix:///var/run/docker.sock", "Docker socket path")
+	rootCmd.PersistentFlags().StringVar(&dockerSocket, "docker-socket", "", "Docker socket path")
 	rootCmd.PersistentFlags().StringVar(&logFormat, "log-format", "text", "Log format (text or json)")
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "info", "Log level (debug, info, warn, error)")
 	rootCmd.PersistentFlags().StringVar(&logFile, "log-file", getDefaultLogPath(), "Log file path")
